@@ -11,11 +11,9 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}">
 </head>
 <style>
-  
-  body{
-    background-color: rgb(221, 234, 244);
-}
-
+  body {
+      background-color: rgb(221, 234, 244);
+  }
 </style>
 <body>
 
@@ -25,40 +23,35 @@
         <div class="nav">
             <ul class="nav nav-tabs">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">
-                        Информация
-                    </a>
+                    <a class="nav-link active" aria-current="page" href="#">Учеба</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="/student_education">
-                        Моя учеба
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">
-                        Видеоуроки
-                    </a>
+                    <a class="nav-link" href="#">Видеоуроки</a>
                 </li>
             </ul>
         </div>
-        <i></i>
     </div>
 </nav>
 
-<div class="container" style="margin-top: 80px">
-    <h1>Аккаунт</h1>
+<div class="container">
+    <h1>Статистика</h1>
 
-    <ul>
-        <li>ФИ: {{ user.name }}</li>
-        <li>Учитель: {{ user.teacher }}</li>
-        <li>Звездочки: {{ user.stars }} звездочек</li>
-    </ul>
-
-    <h1>Рейтинг</h1>
-
-    <p>
-        Ты на {{ user.rating }} месте! Ура!
-    </p>
+    <ol class="list-group list-group-numbered mt-5 col-md-6">
+        {% for u in users %}
+            {% if u.role == 'Ученик' %}
+          <li class="list-group-item d-flex justify-content-between align-items-start">
+            <div class="ms-2 me-auto">
+              <div class="fw-bold">
+                  {{ u.name }}
+              </div>
+            </div>
+            <span class="badge text-bg-primary rounded-pill">
+                {{ u.stars }} звезд
+            </span>
+          </li>
+            {% endif %}
+        {% endfor %}
+</ol>
 </div>
 
 
