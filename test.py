@@ -1,6 +1,7 @@
 import os, sys
 from io import StringIO
 from flask import Flask, render_template, request, session, redirect
+from uroki import lessons
 
 app = Flask(__name__)
 app.secret_key = 'blablabla'
