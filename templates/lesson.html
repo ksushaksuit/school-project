@@ -81,20 +81,18 @@
                             {% endfor %}
                             <button type="submit" class="btn btn-primary mt-3">Ответить</button>
                         </form>
+                    {% elif n.type == 'code' %}
+                        <form action="/code/{{ l.number }}/{{ n.num }}" method="post">
+                            <textarea class="form-control" placeholder="Введите код на Python" name="answer"
+                                      rows="3"></textarea>
+                            <button type="submit" class="btn btn-primary mt-3">Ответить</button>
+                        </form>
                     {% endif %}
                 {% endif %}
             {% endfor %}
 
-            {% if is_true %}
-                {% if is_true == "True" %}
-                    <div class="alert alert-success mt-3" role="alert">
-                        Молодец! Правильный ответ!
-                    </div>
-                {% elif is_true == "False" %}
-                    <div class="alert alert-danger mt-3" role="alert">
-                        Ты ошибся!
-                    </div>
-                {% endif %}
+            {% if d %}
+                {{ d}}: {{ counter }} / {{ kolvo }}
             {% endif %}
         </div>
     </div>

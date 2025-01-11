@@ -1,4 +1,5 @@
-import os
+import os, sys
+from io import StringIO
 from flask import Flask, render_template, request, session, redirect
 
 app = Flask(__name__)
@@ -36,81 +37,6 @@ users = [
         'stars': 3,
     }
 ]
-
-# Имитация (временная БД пользователей)
-lessons = [
-    {
-        "number": 1,
-        "title": 'print(), input(), int(input()) - что и как',
-        'lessons': [
-            {
-                'num': 1,
-                'type': 'text',
-                'text': 'print() - это вывод. <b>Запомните!</b> '
-            },
-            {
-                'num': 2,
-                'type': 'text',
-                'text': 'input() - это ввод'
-            },
-            {
-                'num': 3,
-                'type': 'question',
-                'text': 'Какая функция отвечает за вывод?',
-                'answer': [
-                    {
-                        "text": 'print',
-                        'is_true': True
-                    },
-                    {
-                        "text": 'input',
-                        'is_true': False
-                    },
-                    {
-                        "text": 'vvod',
-                        'is_true': False
-                    }
-                ]
-            },
-            {
-                'num': 4,
-                'type': 'code',
-                'text': 'Выведите на экран "Hello, world!"',
-                'answer': 'Hello, world!',
-            },
-        ]
-    },
-    {
-        "number": 2,
-        "title": 'Переменные - что и как',
-        'lessons': [
-            {
-                'num': 1,
-                'type': 'text',
-                'text': 'print() - это вывод.'
-            },
-            {
-                'num': 2,
-                'type': 'text',
-                'text': 'input() - это ввод'
-            },
-            {
-                'num': 3,
-                'type': 'question',
-                'text': 'Какая функция отвечает за вывод?',
-                'answer': 'print'
-            },
-            {
-                'num': 4,
-                'type': 'code',
-                'text': 'Выведите на экран "Hello, world!"',
-                'answer': 'Hello, world!',
-            },
-        ]
-    },
-
-]
-
 
 @app.route('/')
 def home():
@@ -175,6 +101,53 @@ def open_answer(id, step):
     for l in lessons:
         if l['number'] == id:
             return render_template('lesson.html', user=auth, l=l, step=step, is_true=answer)
+    return redirect('/student_education')
+
+# Ответ на вопрос урока (код)
+@app.route('/code/<id>/<step>', methods=['POST'])
+def open_code(id, step):
+    id = int(id)
+    step = int(step)
+    auth = session['student']
+    answer = request.form['answer']
+    counter = 0
+    kolvo = 0
+    if auth == None:
+        return redirect('/')
+    for l in lessons:
+        if l['number'] == id:
+            for s in l['lessons']:
+                if s['num'] == step:
+                    i_data = []
+                    o_data = []
+                    for j in s['io_data']:
+                        i_data.append(j['input'])
+                    for j in s['io_data']:
+                        o_data.append(j['output'])
+                    print(i_data, o_data)
+                    counter = 0
+                    kolvo = len(i_data)
+                    for i in range(0, len(i_data)):
+                        input_data = i_data[i]
+                        output_data = o_data[i]
+                        sys.stdin = StringIO(input_data)
+                        old_stdout = sys.stdout
+                        redirected_output = sys.stdout = StringIO()
+                        try:
+                            exec(answer)
+                        except Exception as e:
+                            print(e)
+                        sys.stdout = old_stdout
+                        result = redirected_output.getvalue()
+                        print(str(result.strip()), str(output_data.strip()))
+                        if str(result.strip()) == str(output_data.strip()):
+                            counter += 1
+                        print(counter)
+                        if counter == 0:
+                            description = 'Не выполнено'
+                        elif counter != 0:
+                            description = 'Успешно пройдено!'
+                    return render_template('lesson.html', user=auth, l=l, step=step, counter=counter, kolvo=kolvo, d=description)
     return redirect('/student_education')
 
 
