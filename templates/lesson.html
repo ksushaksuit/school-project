@@ -11,11 +11,9 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <style>
-
     body {
         background-color: rgb(221, 234, 244);
     }
-
 </style>
 <body>
 
@@ -25,12 +23,12 @@
         <div class="nav">
             <ul class="nav nav-tabs">
                 <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="#">
-                        Информация
+                    <a class="nav-link" aria-current="page" href="/student">
+                        Мой аккаунт
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/my_education">
+                    <a class="nav-link active" aria-current="page" href="/student_education">
                         Моя учеба
                     </a>
                 </li>
@@ -63,8 +61,13 @@
             {% for n in l.lessons %}
                 {% if n.num == step %}
                     <h5 class="card-title">
-                        {% if n.type == 'text' %}Теория{% elif n.type == 'question' %}Вопрос{% elif n.type == 'code' %}
-                            Задача{% endif %}
+                        {% if n.type == 'text' %}
+                            Теория
+                        {% elif n.type == 'question' %}
+                            Вопрос <span class="badge rounded-pill text-bg-info">+1 звездочка</span>
+                        {% elif n.type == 'code' %}
+                            Задача <span class="badge rounded-pill text-bg-info">+2 звездочки</span>
+                        {% endif %}
                     </h5>
                     <p>
                         {{ n.text|safe }}
@@ -84,7 +87,7 @@
                     {% elif n.type == 'code' %}
                         <form action="/code/{{ l.number }}/{{ n.num }}" method="post">
                             <textarea class="form-control" placeholder="Введите код на Python" name="answer"
-                                      rows="3"></textarea>
+                                      rows="3">{{ code }}</textarea>
                             <button type="submit" class="btn btn-primary mt-3">Ответить</button>
                         </form>
                     {% endif %}
@@ -92,7 +95,23 @@
             {% endfor %}
 
             {% if d %}
-                {{ d}}: {{ counter }} / {{ kolvo }}
+                <div class="alert alert-primary mt-3 mb-0" role="alert">
+                    {{ d }} {{ counter }} / {{ kolvo }} чекпоинт
+                    <br>
+                    Ваш вывод: {{ user_output[0] }}
+                </div>
+            {% endif %}
+
+            {% if is_true %}
+                {% if is_true == "True" %}
+                    <div class="alert alert-success mt-3 mb-0" role="alert">
+                        Молодец! Задание решено правильно!
+                    </div>
+                {% else %}
+                    <div class="alert alert-danger mt-3 mb-0" role="alert">
+                        Попробуй еще, ты решил задание неправильно!
+                    </div>
+                {% endif %}
             {% endif %}
         </div>
     </div>

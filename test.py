@@ -61,12 +61,13 @@ def check_login_form():
 @app.route('/student')
 def student():
     auth = session['student']
+    print(auth)
     return render_template('student_cabinet.html', user=auth, users=users)
 
 # Страница учителя
 @app.route('/teacher')
 def teacher():
-    auth = session['student']
+    auth = session['teacher']
     return render_template('teacher_cabinet.html', user=auth, users=users)
 
 # Список уроков для ученика
@@ -97,6 +98,9 @@ def open_answer(id, step):
     step = int(step)
     auth = session['student']
     answer = request.form['answer']
+    if answer == 'True':
+        session['student']['stars'] += 1
+        print(session['student'])
     if auth == None:
         return redirect('/')
     for l in lessons:
@@ -115,6 +119,7 @@ def open_code(id, step):
     kolvo = 0
     if auth == None:
         return redirect('/')
+    user_output = []
     for l in lessons:
         if l['number'] == id:
             for s in l['lessons']:
@@ -140,15 +145,21 @@ def open_code(id, step):
                             print(e)
                         sys.stdout = old_stdout
                         result = redirected_output.getvalue()
+                        user_output.append(result)
                         print(str(result.strip()), str(output_data.strip()))
                         if str(result.strip()) == str(output_data.strip()):
                             counter += 1
                         print(counter)
                         if counter == 0:
-                            description = 'Не выполнено'
-                        elif counter != 0:
-                            description = 'Успешно пройдено!'
-                    return render_template('lesson.html', user=auth, l=l, step=step, counter=counter, kolvo=kolvo, d=description)
+                            description = 'Не выполнено.'
+                        elif counter != len(i_data) and counter != 0:
+                            description = 'Частично пройдено. Результат не засчитан.'
+                        elif counter == len(i_data):
+                            description = 'Пройдено.'
+                            session['student']['stars'] += 1
+
+                    print(i_data)
+                    return render_template('lesson.html', user=auth, l=l, step=step, counter=counter, kolvo=kolvo, d=description, code=answer, user_output=user_output)
     return redirect('/student_education')
 
 
