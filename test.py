@@ -2,42 +2,11 @@ import os, sys
 from io import StringIO
 from flask import Flask, render_template, request, session, redirect
 from uroki import lessons
+from users import *
+from db import *
 
 app = Flask(__name__)
 app.secret_key = 'blablabla'
-
-# Имитация (временная БД пользователей)
-users = [
-    {
-        "name": "Иван Иванов",
-        "email": "ivan@ivanov.ru",
-        "password": '123',
-        "role": 'Ученик',
-        'rating': 5,
-        'stars': 10,
-        'solved': [],
-        'teacher': 'Моргуненко Е.Ю'
-    },
-    {
-        "name": "Олег",
-        "email": "oleg@mail.ru",
-        "password": '321',
-        "role": 'Ученик',
-        'rating': 4,
-        'stars': 3,
-        'solved': [],
-        'teacher': 'Моргуненко Е.Ю'
-    },
-    {
-        "name": "Моргуненко Е.Ю",
-        "email": "m@eu.ru",
-        "password": '12345',
-        "role": 'Учитель',
-        'solved': [],
-        'rating': 4,
-        'stars': 3,
-    }
-]
 
 @app.route('/')
 def home():
@@ -48,6 +17,7 @@ def home():
 def check_login_form():
     email = request.form.get('email')
     password = request.form.get('password')
+    # Отправляем запрос в бэк, передаем почту и пароль. Должны получить из бэка JSON с инфорамцией о пользователе
     for u in users:
         if u['email'] == email and u['password'] == password:
             if u['role'] == 'Ученик':
@@ -61,14 +31,18 @@ def check_login_form():
 @app.route('/student')
 def student():
     auth = session['student']
-    print(auth)
-    return render_template('student_cabinet.html', user=auth, users=users)
+    user = ''
+    for u in users:
+        if u['name'] == auth['name']:
+            user = u
+    return render_template('student_cabinet.html', user=user, users=users)
 
 # Страница учителя
 @app.route('/teacher')
 def teacher():
     auth = session['teacher']
-    return render_template('teacher_cabinet.html', user=auth, users=users)
+    filter = request.args.get('filter')
+    return render_template('teacher_cabinet.html', user=auth, users=users, filter=filter)
 
 # Список уроков для ученика
 @app.route('/student_education')
@@ -102,6 +76,35 @@ def open_lesson(id, step):
             return render_template('lesson.html', user=auth, l=l, step=step, text=text_q, quest=quest_q, code_q=code_q)
     return redirect('/student_education')
 
+@app.route('/add_student', methods=['POST'])
+def post_add_student():
+    name = request.form['name']
+    clas = request.form['class']
+    email = request.form['email']
+    password = request.form['password']
+    users.append({
+        "name": name,
+        "email": email,
+        'class': clas,
+        "password": password,
+        "role": 'Ученик',
+        'rating': 0,
+        'stars': 0,
+        'solved': [],
+        'teacher': 'Моргуненко Е.Ю'
+    })
+    save_data()
+    return redirect('/teacher')
+
+@app.route('/del_student', methods=['POST'])
+def post_del_student():
+    name = request.form['name']
+    for i in range(len(users)):
+        if users[i]['name'] == name:
+            del users[i]
+    save_data()
+    return redirect('/teacher')
+
 # Ответ на вопрос урока
 @app.route('/answer/<id>/<step>', methods=['POST'])
 def open_answer(id, step):
@@ -110,8 +113,11 @@ def open_answer(id, step):
     auth = session['student']
     answer = request.form['answer']
     if answer == 'True':
-        session['student']['stars'] += 1
-        print(session['student'])
+        for u in users:
+            if u['name'] == auth['name']:
+                u['stars'] += 1
+                save_data()
+                break
     if auth == None:
         return redirect('/')
     for l in lessons:
@@ -177,7 +183,11 @@ def open_code(id, step):
                             description = 'Частично пройдено. Результат не засчитан.'
                         elif counter == len(i_data):
                             description = 'Пройдено.'
-                            session['student']['stars'] += 1
+                            for u in users:
+                                if u['name'] == auth['name']:
+                                    u['stars'] += 1
+                                    save_data()
+                                    break
                     text_q = []
                     quest_q = []
                     code_q = []
