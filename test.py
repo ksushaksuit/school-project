@@ -84,11 +84,22 @@ def open_lesson(id, step):
     id = int(id)
     step = int(step)
     auth = session['student']
+    code = ''
     if auth == None:
         return redirect('/')
     for l in lessons:
         if l['number'] == id:
-            return render_template('lesson.html', user=auth, l=l, step=step)
+            text_q = []
+            quest_q = []
+            code_q = []
+            for j in l['lessons']:
+                if j['type'] == 'text':
+                    text_q.append(j)
+                if j['type'] == 'question':
+                    quest_q.append(j)
+                if j['type'] == 'code':
+                    code_q.append(j)
+            return render_template('lesson.html', user=auth, l=l, step=step, text=text_q, quest=quest_q, code_q=code_q)
     return redirect('/student_education')
 
 # Ответ на вопрос урока
@@ -105,7 +116,17 @@ def open_answer(id, step):
         return redirect('/')
     for l in lessons:
         if l['number'] == id:
-            return render_template('lesson.html', user=auth, l=l, step=step, is_true=answer)
+            text_q = []
+            quest_q = []
+            code_q = []
+            for j in l['lessons']:
+                if j['type'] == 'text':
+                    text_q.append(j)
+                if j['type'] == 'question':
+                    quest_q.append(j)
+                if j['type'] == 'code':
+                    code_q.append(j)
+            return render_template('lesson.html', user=auth, l=l, step=step, is_true=answer, text=text_q, quest=quest_q, code_q=code_q)
     return redirect('/student_education')
 
 # Ответ на вопрос урока (код)
@@ -157,9 +178,18 @@ def open_code(id, step):
                         elif counter == len(i_data):
                             description = 'Пройдено.'
                             session['student']['stars'] += 1
-
+                    text_q = []
+                    quest_q = []
+                    code_q = []
+                    for j in l['lessons']:
+                        if j['type'] == 'text':
+                            text_q.append(j)
+                        if j['type'] == 'question':
+                            quest_q.append(j)
+                        if j['type'] == 'code':
+                            code_q.append(j)
                     print(i_data)
-                    return render_template('lesson.html', user=auth, l=l, step=step, counter=counter, kolvo=kolvo, d=description, code=answer, user_output=user_output)
+                    return render_template('lesson.html', user=auth, l=l, step=step, counter=counter, kolvo=kolvo, text=text_q, quest=quest_q, code_q=code_q, d=description, code=answer, user_output=user_output)
     return redirect('/student_education')
 
 
