@@ -1,8 +1,7 @@
 import os, sys
 from io import StringIO
 from flask import Flask, render_template, request, session, redirect
-from uroki import lessons
-from users import *
+from uroki import lessons, video
 from db import *
 
 app = Flask(__name__)
@@ -18,6 +17,7 @@ def check_login_form():
     email = request.form.get('email')
     password = request.form.get('password')
     # Отправляем запрос в бэк, передаем почту и пароль. Должны получить из бэка JSON с инфорамцией о пользователе
+    print(users)
     for u in users:
         if u['email'] == email and u['password'] == password:
             if u['role'] == 'Ученик':
@@ -51,6 +51,13 @@ def student_education():
     if auth == None:
         return redirect('/')
     return render_template('student_education.html', user=auth, lessons=lessons)
+
+@app.route('/student_video')
+def student_video():
+    auth = session['student']
+    if auth == None:
+        return redirect('/')
+    return render_template('student_video.html', user=auth, videos=video)
 
 # Урок (открывается по Id урока и шагу)
 @app.route('/lessons/<id>/<step>')
@@ -204,4 +211,5 @@ def open_code(id, step):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(port=5002, debug=True)
+    #TODO: Port 5000

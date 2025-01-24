@@ -315,8 +315,14 @@ lessons = [
                         'output': 'I***like***Python'
                     }
                 ],
-            },
-
+            }
         ]
+    }
+]
+
+video = [
+    {
+        "title": "print(), input(), int(input()), переменные - что и как",
+        "link": "https://rutube.ru/play/embed/5a6811a775dc1b33b0c23d385c61be68/?p=KRE1MyguSHRVB2jDCB0GyQ"
     }
 ]
