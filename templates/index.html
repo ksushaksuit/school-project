@@ -1,34 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          rel="stylesheet"
-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-          crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <title>ItPying - Образовательная платформа</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            new WOW().init();
+        });
+    </script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            text-align: center;
+        }
+        .hero {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background: linear-gradient(to right, #4b6cb7, rgb(157, 195, 215));
+            color: white;
+        }
+        .hero img {
+            width: 150px;
+            animation: bounce 2s infinite;
+        }
+        .info-section {
+            padding: 50px 20px;
+        }
+    </style>
 </head>
-<style>
-
-    body {
-        background-color: rgb(157, 195, 215);
-    }
-
-</style>
 <body>
+<div class="hero">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg" alt="Python Logo" class="wow animate__animated animate__bounce">
+    <h1 class="wow animate__animated animate__fadeInDown">Добро пожаловать в ItPying</h1>
+    <p class="wow animate__animated animate__fadeInUp">Образовательная платформа для изучения Python и технического английского</p>
+    <a data-bs-toggle="modal" data-bs-target="#loginModal" class="btn btn-light mt-3 wow animate__animated animate__zoomIn">Войти</a>
+</div>
 
-<nav class="navbar fixed-top bg-body-tertiary">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">ITPYING</a>
-        <button type="button" class="btn btn-primary"
-                aria-expanded="false" data-bs-toggle="modal" data-bs-target="#loginModal">
-            Войти
-        </button>
-    </div>
-</nav>
-
+<section id="info" class="info-section container">
+    <h2 class="wow animate__animated animate__fadeInUp">О платформе ItPying</h2>
+    <p class="wow animate__animated animate__fadeInUp" data-wow-delay="0.3s">
+        ItPying создан для школьников и студентов, желающих изучить Python с нуля. Мы работаем в ведущих школах страны,
+        предоставляя интерактивные курсы и практические задания.
+    </p>
+    <h3 class="mt-4 wow animate__animated animate__fadeInUp">Школы, участвующие в программе:</h3>
+    <ul class="list-group list-group-flush wow animate__animated animate__fadeInUp" data-wow-delay="0.5s">
+        <li class="list-group-item">Школа №1561</li>
+        <li class="list-group-item">IT-класс Московской Школы</li>
+    </ul>
+</section>
 
 <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -81,23 +109,6 @@
         </div>
     </div>
 </div>
-
-<h1 class="text-center" style="font-size: 150px; margin-top: 100px">ITPYING</h1>
-<h3 class="text-center" style="font-size: 26px">Изучай технический английский и python с нами ! </h3>
-<img class="strelka"
-     src="{{ url_for('static', filename='arrow.png') }}" alt="freeCodeCamp"
-     width="150"
-     height="150"
-/>
-
-
-<img src="{{ url_for('static', filename='python.png') }}" style=float:right; width="250" height="250" bord>
-
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous">
-</script>
 
 </body>
 </html>

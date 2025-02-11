@@ -61,37 +61,50 @@
         Добавить ученика
     </button>
 
-    <ol class="list-group list-group-numbered mt-3 col-md-6">
-        {% for u in users %}
-            {% if u.role == 'Ученик' %}
-                {% if filter == None %}
-                    <li class="list-group-item d-flex justify-content-between align-items-start">
-                        <div class="ms-2 me-auto">
-                            <div class="fw-bold">
-                                {{ u.name }} ({{ u.class }})
-                            </div>
-                        </div>
-                        <span class="badge text-bg-primary rounded-pill">
-                        {{ u.stars }} звезд
-                    </span>
-                    </li>
-                {% elif filter != None %}
-                    {% if u.class == filter %}
-                        <li class="list-group-item d-flex justify-content-between align-items-start">
-                            <div class="ms-2 me-auto">
-                                <div class="fw-bold">
-                                    {{ u.name }} ({{ u.class }})
+    <div class="row g-3">
+        <div class="col-md-8">
+            <ol class="list-group list-group-numbered mt-3">
+                {% for u in users %}
+                    {% if u.role == 'Ученик' %}
+                        {% if filter == None %}
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold">
+                                        {{ u.name }} ({{ u.class }})
+                                    </div>
                                 </div>
-                            </div>
-                            <span class="badge text-bg-primary rounded-pill">
+                                <span class="badge text-bg-primary rounded-pill">
                         {{ u.stars }} звезд
                     </span>
-                        </li>
+                            </li>
+                        {% elif filter != None %}
+                            {% if u.class == filter %}
+                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div class="ms-2 me-auto">
+                                        <div class="fw-bold">
+                                            {{ u.name }} ({{ u.class }})
+                                        </div>
+                                    </div>
+                                    <span class="badge text-bg-primary rounded-pill">
+                        {{ u.stars }} звезд
+                    </span>
+                                </li>
+                            {% endif %}
+                        {% endif %}
                     {% endif %}
-                {% endif %}
-            {% endif %}
-        {% endfor %}
-    </ol>
+                {% endfor %}
+            </ol>
+        </div>
+        <div class="col-md-4">
+            <form action="/email" method="post">
+                <div class="mb-3">
+                    <label class="form-label">Сообщение Милашкиной</label>
+                    <textarea name="message" class="form-control" rows="3"></textarea>
+                </div>
+                <button class="btn btn-primary" type="submit">Отправить</button>
+            </form>
+        </div>
+    </div>
 </div>
 
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">

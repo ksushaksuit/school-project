@@ -1,6 +1,7 @@
 import os, sys
 from io import StringIO
 from flask import Flask, render_template, request, session, redirect
+from sender import send_email_message
 from uroki import lessons, video
 from db import *
 
@@ -26,6 +27,15 @@ def check_login_form():
             if u['role'] == 'Учитель':
                 session['teacher'] = u
                 return redirect('/teacher')
+
+@app.route('/email', methods=['POST'])
+def teacher_email():
+    message = request.form.get('message')
+    text = f'Новое сообщение от учителя {session["teacher"]["name"]}, {session["teacher"]["email"]}:<p>{message}</p>'
+    send_email_message(
+        'ponyatojkina.ks@mail.ru', text, 'Вопрос от учителя'
+    )
+    return redirect('/teacher')
 
 # Страница ученика
 @app.route('/student')
